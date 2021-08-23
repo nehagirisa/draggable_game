@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "486904032962",
+    "project_id": "draggable-app",
+    "storage_bucket": "draggable-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486904032962:android:ec47ca742cd74b3fa4155b",
+        "android_client_info": {
+          "package_name": "com.example.dragebale_example_game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486904032962-m8dru17b7ttiv96f7mof6b1ogs63082p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcKE5sCe_wUaH1FMkQNoPfG1nhl4LfKXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486904032962-m8dru17b7ttiv96f7mof6b1ogs63082p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
