@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 // class ItemModel {
 //   final String name;
 //   final String value;
@@ -35,37 +37,37 @@
 //  ];
 
 
- class Data{
- late String name;
-   late String value;
-   late String imgurl;
-   
+//  class Data{
+//  late String name;
+//  late String value;
+//  late String imgurl;
+//  late bool accepting = false;
 
-   Data({required this.name, required this.value,required this.imgurl,});
+//    Data({required this.name, required this.value,required this.imgurl,this.accepting=false,});
 
-    Data.fromJson(Map data) {
-    this.name = data['name'];
-    this.value = data['value'];
-    this.imgurl = data['imgurl'];
-   }
+//     Data.fromJson(Map <String, dynamic> json) {
+//     name = json['name'];
+//     value = json['value'];
+//     imgurl = json['imgurl'];
+//    }
 
-    Map<String, dynamic> toJson() {
-      final Map<String, dynamic> data = new Map<String, dynamic>();
-        data['name'] = this.name;
-        data['value'] = this.name;
-        data['imgurl'] = this.name;
-        return data;
-      // data['name']= this.name;
-      // data['value']= this.value;
-      // data['imgurl']= this.imgurl;
+//     Map<String, dynamic> toJson() {
+//       final Map<String, dynamic> data = new Map<String, dynamic>();
+//         data['name'] = this.name;
+//         data['value'] = this.value;
+//         data['imgurl'] = this.imgurl;
+//         return data;
+//       // data['name']= this.name;
+//       // data['value']= this.value;
+//       // data['imgurl']= this.imgurl;
 
-  //  Map<String, dynamic> toJson() => {
-  //     final Map<String, dynamic> data = new Map<String, dynamic>();
-  //       "name": name == null ? null : name,
-  //       "value": value == null ? null : value,
-  //       "imgurl": imgurl == null ? null : imgurl,
- }
- }
+//   //  Map<String, dynamic> toJson() => {
+//   //     final Map<String, dynamic> data = new Map<String, dynamic>();
+//   //       "name": name == null ? null : name,
+//   //       "value": value == null ? null : value,
+//   //       "imgurl": imgurl == null ? null : imgurl,
+//  }
+//  }
   
 
   // PaymentCard.fromJson(Map data) {
@@ -91,3 +93,30 @@
   //   data['uid'] = this._uid;
   //   return data;
   // }
+
+
+class Data{
+  late String name;
+  late String value;
+  late String imgurl;
+  late bool accepting = false;
+
+  Data({required this.name,required this.imgurl,required this.value,
+   required this.accepting
+  });
+  
+  Data.fromJson(Map<String , dynamic> json){
+   name = json['name'];
+   value = json['value'];
+   imgurl = json['json'];
+  }
+
+  Map<String , dynamic> toJson(){
+    final Map<String , dynamic> data = new Map<String , dynamic>();
+    data['name'] = this.name;
+    data['value'] = this.value;
+    data['image'] = this.imgurl;
+    return data;
+          }
+
+}

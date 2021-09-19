@@ -1,4 +1,5 @@
-import 'dart:js';
+
+
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dragebale_example_game/data/data.dart';
@@ -41,6 +42,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ref = FirebaseFirestore.instance.collection("fruits");
+  
 
   final snackBar = SnackBar(
     content: "Yay! Correct 🥳".text.center.make(),
@@ -65,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   initGame() {
     gameOver = false;
     score = 0;
-    // items=dataList.take(5).toList()
+    items= items.take(5).toList();
     items2 = List<Data>.from(items);
     items.shuffle();
     items2.shuffle();
@@ -74,14 +76,46 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (items.length == 0) gameOver = true;
-    final data = MediaQuery.of(context);
+    //  if (items.length == 0) gameOver = true;
+    // final data = MediaQuery.of(context);
      
     return Scaffold(
       backgroundColor: Colors.greenAccent.shade100,
       appBar: AppBar(
         title: Text('Drag&Drop Game'),
       ),
+      // body: StreamBuilder(
+      //   stream: ref.snapshots(),
+      //   builder: (context, AsyncSnapshot<QuerySnapshot>snapshot){
+      //     if (snapshot.hasData ){
+      //       return ListView.builder(
+      //         itemCount: snapshot.data!.docs.length,
+      //         itemBuilder: (context, index){
+      //          List<Data> dataList = snapshot.data!.docs.map((e) => Data.fromJson(e.data() as Map<String, dynamic>)).toList();
+      //           return Column(
+      //             children: [
+      //               Draggable(child: Image.network(dataList[index].imgurl,height: 100,width: 100, ),
+      //               feedback: Image.network(dataList[index].imgurl,height: 100,width: 100, ),
+      //               childWhenDragging:  Image.network(
+      //                                       dataList[index].imgurl,
+      //                                       height: 100,
+      //                                       width: 100, ),
+      //               )
+      //             ],
+      //           );
+      //                         });
+
+      //     }else{
+      //     return CircularProgressIndicator();}
+
+      //   } ),
+
+
+
+
+
+
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -96,26 +130,20 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.bold,
                       fontSize: 30.0))
             ])),
-            StreamBuilder(
+               StreamBuilder(
                 stream: ref.snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                   final p = snapshot.data!.docs;
-                   if (snapshot.hasData == null) {
-                    // List<Data> dataList = snapshot.data!.docs
-                    //     .map((e) => Data.fromJson(e.data!)
-                    //     )
-                     List<Data>  dataList = [];
-                     p.forEach((element) {
-                  dataList.add(Data.fromJson(element.data));
-                });
-
-                    // .toList();
+                  
+                   if (snapshot.hasData ) {
+               
                     return ListView.builder(
                         shrinkWrap: true,
-                        itemCount: dataList.length,
+                        itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          if (!gameOver)
-                            Row(
+                           List<Data> dataList = snapshot.data!.docs.map((e) => Data.fromJson(e.data() as Map<String, dynamic>)).toList();
+                          
+                          //  if(!gameOver)
+                           return Row(
                               children: <Widget>[
                                 Column(
                                   children: items
@@ -183,40 +211,44 @@ class _HomePageState extends State<HomePage> {
                                             width: 100,
                                             alignment: Alignment.center,
                                             margin: const EdgeInsets.all(8.0),
-                                            child: item.name.text.white.bold
+                                            child:dataList[index].name.text.white.bold
                                                 .size(18)
                                                 .make(),
                                           ));
-                                }).toList()),
-                              ],
+                                }).toList()
+                              
+                                )
+                               ],
                             );
-                          if (gameOver)
-                            "Game Over"
-                                .text
-                                .red600
-                                .bold
-                                .size(24)
-                                .make()
-                                .centered();
-                          if (gameOver)
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue,
-                                  onPrimary: Colors.white,
-                                  fixedSize: Size.fromWidth(80)),
-                              child: "New Game".text.center.make().centered(),
-                              onPressed: () {
-                                initGame();
-                                setState(() {});
-                              },
-                            );
+                          // if (gameOver)
+                          //   "Game Over"
+                          //       .text
+                          //       .red600
+                          //       .bold
+                          //       .size(24)
+                          //       .make()
+                          //       .centered();
+                          // if (gameOver)
+                          //   ElevatedButton(
+                          //     style: ElevatedButton.styleFrom(
+                          //         primary: Colors.blue,
+                          //         onPrimary: Colors.white,
+                          //         fixedSize: Size.fromWidth(80)),
+                          //     child: "New Game".text.center.make().centered(),
+                          //     onPressed: () {
+                          //       initGame();
+                          //       setState(() {});
+                          //     },
+                          //   );
                         });
                   }
-                }    
+                  return CircularProgressIndicator();
+                }  
+                 
         ),
           ],
         ),
       ),
-    );
+      );
   }
 }
