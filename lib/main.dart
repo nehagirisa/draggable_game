@@ -1,14 +1,12 @@
 
-
 import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dragebale_example_game/data/data.dart';
-// import 'package:dragebale_example_game/fruit_notifire.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'dart:ui';
 
-//import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -33,6 +31,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -53,72 +53,49 @@ class _HomePageState extends State<HomePage> {
     backgroundColor: Colors.red,
   );
 
-  late List<Data> items;
-  late List<Data> items2;
-  late int score;
-  late bool gameOver;
-  late bool accepting = false;
-  @override
-  void initState() {
-    super.initState();
-    initGame();
-  }
+ 
+   List<Data>? items=[];
+   List<Data>? items2=[];
+ 
+  // int score;
+   bool? gameOver;
+   bool? accepting = false;
 
-  initGame() {
-    gameOver = false;
-    score = 0;
-    items= items.take(5).toList();
-    items2 = List<Data>.from(items);
-    items.shuffle();
-    items2.shuffle();
-    // dataList.shuffle();
+  get child => null;
+  
+  
+  @override
+   void initState() {
+   super.initState();
+   initGame();
+   }
+//   //  gameOver = false;
+      int score = 0;
+//     items= items.take(5).toList();
+//     items2 = List<Data>.from(items);
+  initGame(){
+    items= items!.take(5).toList();
+     items2 = List<Data>.from(items!);
+     items!.shuffle();
+     items2!.shuffle();
   }
 
   @override
   Widget build(BuildContext context) {
-    //  if (items.length == 0) gameOver = true;
-    // final data = MediaQuery.of(context);
-     
+      // if (items!.length == 0) gameOver = true;
+    //  final data = MediaQuery.of(context);
+    
     return Scaffold(
       backgroundColor: Colors.greenAccent.shade100,
-      appBar: AppBar(
-        title: Text('Drag&Drop Game'),
+       appBar:
+       AppBar(
+       title: Text('Drag & Drop Game').text.make(),
       ),
-      // body: StreamBuilder(
-      //   stream: ref.snapshots(),
-      //   builder: (context, AsyncSnapshot<QuerySnapshot>snapshot){
-      //     if (snapshot.hasData ){
-      //       return ListView.builder(
-      //         itemCount: snapshot.data!.docs.length,
-      //         itemBuilder: (context, index){
-      //          List<Data> dataList = snapshot.data!.docs.map((e) => Data.fromJson(e.data() as Map<String, dynamic>)).toList();
-      //           return Column(
-      //             children: [
-      //               Draggable(child: Image.network(dataList[index].imgurl,height: 100,width: 100, ),
-      //               feedback: Image.network(dataList[index].imgurl,height: 100,width: 100, ),
-      //               childWhenDragging:  Image.network(
-      //                                       dataList[index].imgurl,
-      //                                       height: 100,
-      //                                       width: 100, ),
-      //               )
-      //             ],
-      //           );
-      //                         });
-
-      //     }else{
-      //     return CircularProgressIndicator();}
-
-      //   } ),
-
-
-
-
-
-
-
+      
       body: SingleChildScrollView(
         child: Column(
           children: [
+            
             Text.rich(TextSpan(children: [
               TextSpan(
                   text: "Score: ",
@@ -130,124 +107,137 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.bold,
                       fontSize: 30.0))
             ])),
+          
                StreamBuilder(
                 stream: ref.snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   
                    if (snapshot.hasData ) {
-               
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                           List<Data> dataList = snapshot.data!.docs.map((e) => Data.fromJson(e.data() as Map<String, dynamic>)).toList();
+                  List<Data> dataList = snapshot.data!.docs.map((e) => Data.fromJson(e.data() as Map<String, dynamic>)).toList();
+                      items = dataList;
+                      items2 = dataList;
+                      
+                    return Container(
+                      height: 600,
+                      width: 800,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: dataList.length,
+                          itemBuilder: (context, index) {
                           
-                          //  if(!gameOver)
-                           return Row(
-                              children: <Widget>[
-                                Column(
-                                  children: items
-                                      .map((data) => Draggable<Data>(
-                                          data: data,
-                                          feedback: Image.network(
-                                            dataList[index].imgurl,
-                                            height: 100,
-                                            width: 100,
-                                          ),
-                                          childWhenDragging: Image.network(
-                                            dataList[index].imgurl,
-                                            height: 100,
-                                            width: 100,
-                                            colorBlendMode: BlendMode.softLight,
-                                          ),
-                                          child: Image.network(
-                                            dataList[index].imgurl,
-                                            height: 100,
-                                            width: 100,
-                                          )).p12())
-                                      .toList(),
-                                ).p12(),
-                                Spacer(),
-                                Column(
-                                    children: items2.map((item) {
-                                  return DragTarget<Data>(
-                                      onAccept: (receivedItem) {
-                                        if (item.value == receivedItem.value) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
-                                          setState(() {
-                                            items.remove(receivedItem);
-                                            items2.remove(item);
-                                            score += 10;
-                                            item.accepting = false;
-                                          });
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar1);
-                                          setState(() {
-                                            score -= 5;
-                                            item.accepting = false;
-                                          });
-                                        }
-                                      },
-                                      onLeave: (receivedItem) {
-                                        setState(() {
-                                          item.accepting = false;
-                                        });
-                                      },
-                                      onWillAccept: (receivedItem) {
-                                        setState(() {
-                                          item.accepting = true;
-                                        });
-                                        return true;
-                                      },
-                                      builder: (context, acceptedItems,
-                                              rejectedItems) =>
-                                          Container(
-                                            color: item.accepting
-                                                ? Colors.blue.shade200
-                                                : Colors.blue,
-                                            height: 100,
-                                            width: 100,
-                                            alignment: Alignment.center,
-                                            margin: const EdgeInsets.all(8.0),
-                                            child:dataList[index].name.text.white.bold
-                                                .size(18)
-                                                .make(),
-                                          ));
-                                }).toList()
-                              
-                                )
-                               ],
-                            );
-                          // if (gameOver)
-                          //   "Game Over"
-                          //       .text
-                          //       .red600
-                          //       .bold
-                          //       .size(24)
-                          //       .make()
-                          //       .centered();
-                          // if (gameOver)
-                          //   ElevatedButton(
-                          //     style: ElevatedButton.styleFrom(
-                          //         primary: Colors.blue,
-                          //         onPrimary: Colors.white,
-                          //         fixedSize: Size.fromWidth(80)),
-                          //     child: "New Game".text.center.make().centered(),
-                          //     onPressed: () {
-                          //       initGame();
-                          //       setState(() {});
-                          //     },
-                          //   );
-                        });
+                            //  if(!gameOver)
+                             return Row(
+                                children: <Widget>[
+                                    Column(
+                                children:[
+                                  Draggable<Data>(
+                                        data: dataList[index],
+                                        feedback: Image.network(
+                                          dataList[index].imgurl.toString(),
+                                          height: 100,
+                                          width: 100,
+                                        ),
+                                        childWhenDragging: Image.network(
+                                          dataList[index].imgurl.toString(),
+                                          height: 100,
+                                          width: 100,
+                                          colorBlendMode: BlendMode.softLight,
+                                        ),
+                                        child: Image.network(
+                                          dataList[index].imgurl.toString(),
+                                          height: 100,
+                                          width: 100,
+                                        ).p12()
+                                   )]
+                              ).p12(),
+                                  Spacer(),
+                                  
+                                 
+                                  Expanded(
+                                    child: Container(
+                                       
+                                      child: DragTarget<Data>(
+                                          onAccept: (receivedItem) 
+                                          {
+                                            // print(receivedItem.value.toString());
+                                            if (dataList[index].value == receivedItem.value) {
+                                           
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                              setState(() {
+                                                 dataList[index].accepting = false;
+                                                dataList.removeWhere((element)=>element.value ==receivedItem.value);
+                                               dataList.removeWhere((element) => element.value==dataList[index].value);
+                                                score += 10;
+                                               
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar1);
+                                              setState(() {
+                                                score -= 5;
+                                                dataList[index].accepting = false;
+                                              });
+                                            }
+                                          },
+                                          onLeave: (receivedItem) {
+                                            setState(() {
+                                              dataList[index].accepting = false;
+                                            });
+                                          },
+                                          onWillAccept: (receivedItem) {
+                                            setState(() {
+                                              dataList[index].accepting = true;
+                                            });
+                                            return true;
+                                          },
+                                          builder: (context, acceptedItems,
+                                                  rejectedItems) =>
+                                              Container(
+                                                color: dataList[index].accepting
+                                                    ? Colors.blue.shade200
+                                                    : Colors.blue,
+                                                height:50,
+                                                width: 50,
+                                                alignment: Alignment.center,
+                                                margin: const EdgeInsets.all(8.0),
+                                                child:Text(dataList[index].name.toString(),)
+                                              ))
+                                                                
+                                     
+                                    ),
+                                  )
+                                 ],
+                              );
+                            // if (gameOver)
+                            //   "Game Over"
+                            //       .text
+                            //       .red600
+                            //       .bold
+                            //       .size(24)
+                            //       .make()
+                            //       .centered();
+                            // if (gameOver)
+                            //   ElevatedButton(
+                            //     style: ElevatedButton.styleFrom(
+                            //         primary: Colors.blue,
+                            //         onPrimary: Colors.white,
+                            //         fixedSize: Size.fromWidth(80)),
+                            //     child: "New Game".text.center.make().centered(),
+                            //     onPressed: () {
+                            //       initGame();
+                            //       setState(() {});
+                            //     },
+                            //   );
+                          }),
+                    );
                   }
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator().centered();
                 }  
                  
         ),
           ],
-        ),
+        ).centered(),
       ),
       );
   }
